@@ -7,6 +7,7 @@ use App\Models\Postcode;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use MatanYadaev\EloquentSpatial\Objects\Point;
 
 class LocationController extends Controller
 {
@@ -23,7 +24,7 @@ class LocationController extends Controller
 
         $location = Location::create([
             'name' => $validatedData['name'],
-            'coordinates' => null, // TODO
+            'coordinates' => new Point($validatedData['latitude'], $validatedData['longitude'], 4326),
             'longitude' => $validatedData['longitude'],
             'latitude' => $validatedData['latitude'],
             'status' => $validatedData['status'],
@@ -50,9 +51,9 @@ class LocationController extends Controller
         }
 
         $locations = Location::whereRaw(
-            "ST_Distance_Sphere(coordinates, ST_GeomFromText(?)) <= ?",
+            "ST_Distance_Sphere(coordinates, ST_GeomFromText(?, 4326)) <= ?",
             [
-                "POINT({$postcode->longitude} {$postcode->latitude})",
+                "POINT({$postcode->latitude} {$postcode->longitude})",
                 $validatedData['radius']
             ]
         )->get();
@@ -73,8 +74,8 @@ class LocationController extends Controller
 
         $locations = Location::where('status', 'open')
             ->whereRaw(
-                "ST_Distance_Sphere(coordinates, ST_GeomFromText(?)) <= delivery_distance",
-                ["POINT({$postcode->longitude} {$postcode->latitude})"]
+                "ST_Distance_Sphere(coordinates, ST_GeomFromText(?, 4326)) <= delivery_distance",
+                ["POINT({$postcode->latitude} {$postcode->longitude})"]
             )
             ->get();
 

@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->enum('status', ['open', 'closed']);
             $table->enum('type', ['restaurant', 'shop', 'takeaway']);
-            $table->geography('coordinates')->nullable();
-            $table->decimal('latitude', 9, 6)->nullable();
-            $table->decimal('longitude', 9, 6)->nullable();
+            $table->geography('coordinates');
+            $table->decimal('latitude', 9, 6);
+            $table->decimal('longitude', 9, 6);
             $table->integer('delivery_distance');
             $table->timestamps();
         });

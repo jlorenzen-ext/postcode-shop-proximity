@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('postcodes', function (Blueprint $table) {
             $table->id();
             $table->string('postcode', 10)->unique();
-            $table->geography('coordinates')->nullable();
-            $table->decimal('latitude', 9, 6)->nullable();
-            $table->decimal('longitude', 9, 6)->nullable();
+            $table->geography('coordinates');
+            $table->decimal('latitude', 9, 6);
+            $table->decimal('longitude', 9, 6);
             $table->timestamps();
 
             $table->spatialIndex('coordinates');
